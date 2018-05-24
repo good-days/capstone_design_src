@@ -20,6 +20,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -84,6 +87,7 @@ public class BluetoothLeService extends Service {
             isconnect = connect(savedMacAddress);
         }
         Log.d("isconnect",isconnect+"");
+        Dit=new DataInfoTTS(getApplicationContext());
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -179,7 +183,8 @@ public class BluetoothLeService extends Service {
 
     private void broadcastUpdate(final String action){
         final Intent intent = new Intent(action);
-        sendBroadcast(intent);
+        //sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     //프로파일 handling
@@ -196,7 +201,7 @@ public class BluetoothLeService extends Service {
                 stringBuilder.append((char)(data[i]));
 
             Log.d("tagnum",stringBuilder.toString());
-            Dit=new DataInfoTTS(getApplicationContext());
+
             Dit.run(stringBuilder.toString());
 
             intent.putExtra("DATA",stringBuilder.toString());

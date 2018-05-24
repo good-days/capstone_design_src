@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -32,7 +33,9 @@ public class TTS extends UtteranceProgressListener implements TextToSpeech.OnIni
 
     public void speak(String text) {
         TTSFocus(context);
-        if(textToSpeech != null) {
+        TelephonyManager mTM=(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+        int call_state=mTM.getCallState();
+        if(textToSpeech != null && call_state==0) {
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 String myUtteranceID = "myUtteranceID";
                 textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, myUtteranceID);
@@ -88,6 +91,7 @@ public class TTS extends UtteranceProgressListener implements TextToSpeech.OnIni
                 {
                     case AudioManager.AUDIOFOCUS_GAIN:
                         //오디오 포커스 체인지 리스너 구현
+                        break;
                 }
             }
         },AudioManager.STREAM_MUSIC,AudioManager.AUDIOFOCUS_GAIN);
